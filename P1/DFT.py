@@ -29,12 +29,20 @@ FORTIME = 5
 # Initialize pygame
 pygame.init()
 
+#For isolating channels
+LCHANNEL = True
+RCHANNEL = False
+
+FACTPOWER = 1
+
+# For windowing function
+BETA  = 10
 
 #initialize factors
 FACTS = []
 def initializeFactors():
     for i in range(0, FREQS):
-        FACTS.append(i * i)
+        FACTS.append(math.pow(i, FACTPOWER))
 
 # Initialize the location of ffmpeg
 
@@ -132,9 +140,8 @@ def drawBar(curr, data):
     pygame.draw.rect(screen, (255, 255, 255), (0,10, SWIDTH * (curr / data),10))
 
 def DFT(sequence):
-    # Windowing function
-    B = 50
-    win = np.kaiser(len(sequence), B)
+    
+    win = np.kaiser(len(sequence), BETA)
     # The following function performs a discrete fourier transform and returns an array of magnitudes
     dft = np.fft.rfft(sequence * win, FREQS)
     res =[]
@@ -265,6 +272,9 @@ def main():
             if e.type == UPDATE:
                 if trackPlayed:
                     # dt is time elapsed (in seconds)
+                    
+                    screen.fill((0, 0, 0))
+                    
                     if playing:
                         dt = (pygame.time.get_ticks() / 1000) - start 
                         start = pygame.time.get_ticks() / 1000
@@ -291,14 +301,15 @@ def main():
                         curr += smp
                         # Update currentTime
                         currentTime += dt
+                        if LCHANNEL:
                         # Perform DFT
-                        res = DFT(sequence)
+                            res = DFT(sequence)
+                            drawFreqs(res, RED)
+                        if RCHANNEL:
                         # Perform DFT on other side
-                        dres = DFT(rsequence)
+                            dres = DFT(rsequence)
+                            drawFreqs(dres, BLUE)
     
-                    screen.fill((0, 0, 0))
-                    drawFreqs(res, RED)
-                    drawFreqs(dres, BLUE)
                     drawTimer(currentTime - 1)
                     drawBar(curr, len(dat))
                     printLabel("Now playing " + filepath)
@@ -307,4 +318,6 @@ def main():
     
 
 main()
+
+input("Press any key to continue")
 
