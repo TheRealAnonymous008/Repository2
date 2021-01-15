@@ -117,17 +117,19 @@ def scale(arr):
 def drawFreqs(res, color):
     # Perform scaling so frequencies can fit on screen
     res = scale(res)
-    
+    totalFreqs = (FREQS - LOWFREQ)
     # Draw frequencies
     for i in range(0, len(res)):
         if(res[i] > 0 ):
-            pygame.draw.rect(screen, color, (2 * i * SWIDTH / FREQS, 
+            pygame.draw.rect(screen, color, (2 * i * SWIDTH /totalFreqs, 
                                                     SHEIGHT/2  - res[i], 
-                                                    2 * SWIDTH / FREQS, res[i] ))
+                                            2 * SWIDTH /(totalFreqs), 
+                                                    res[i] ))
         else: 
-            pygame.draw.rect(screen, color, (2 * i * SWIDTH / FREQS, 
+            pygame.draw.rect(screen, color, (2 * i * SWIDTH / totalFreqs, 
                                                     SHEIGHT / 2, 
-                                                    2 * SWIDTH / FREQS, -res[i] ))
+                                            2 * SWIDTH / (totalFreqs), 
+                                                    -res[i] ))
     
     
 def drawTimer(time):
@@ -151,7 +153,7 @@ def DFT(sequence):
     for i in range(LOWFREQ, len(dft)):
         # Multiply by a factor proportional to the frequency.
         # This is similar to a discrete wavelet transform, which is time dependent. Low frequencies last longer .
-        res.append(dft[i].real * FACTS[i])
+        res.append(abs(dft[i].real * FACTS[i]))
     return res
 
 def printLabel(label):
