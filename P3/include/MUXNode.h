@@ -13,7 +13,6 @@ class MUXNode : public AbstractNode
         MUXNode& operator=(const MUXNode& other);
 
     private:
-        void Process() override;
 };
 
 #endif // MUXNODE_H

@@ -84,6 +84,7 @@ void AbstractNode::performOperation(){
     }
 }
 
+
 std::string AbstractNode::generateId(){
     const std::string charList = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     int chars = charList.size();

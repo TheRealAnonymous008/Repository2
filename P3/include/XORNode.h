@@ -8,12 +8,12 @@ class XORNode : public AbstractNode
 {
     public:
         XORNode();
+        XORNode(int n);
         virtual ~XORNode();
         XORNode(const XORNode& other);
         XORNode& operator=(const XORNode& other);
 
     private:
-        void Process() override;
 };
 
 #endif // XORNODE_H

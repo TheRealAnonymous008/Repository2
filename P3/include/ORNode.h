@@ -8,12 +8,13 @@ class ORNode : public AbstractNode
 {
     public:
         ORNode();
+        ORNode(int n);
         virtual ~ORNode();
         ORNode(const ORNode& other);
         ORNode& operator=(const ORNode& other);
 
     private:
-        void Process() override;
+
 };
 
 #endif // ORNODE_H

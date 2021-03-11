@@ -35,7 +35,7 @@ void Port::receiveData(){
 
 
 void Port::displayVal(){
-    std::cout<<this->actualValue.getValue()<<"\n";
+    std::cout<<this->actualValue.getValue();
 }
 
 Signal Port::getActualValue(){
@@ -43,5 +43,5 @@ Signal Port::getActualValue(){
 }
 
 void Port::displayReg(){
-    std::cout<<"REG: "<<this->internalRegister.getValue()<<"\n";
+    std::cout<<"REG: "<<this->internalRegister.getValue();
 }

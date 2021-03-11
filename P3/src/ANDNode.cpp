@@ -12,6 +12,16 @@ ANDNode::ANDNode() : AbstractNode {"AND", 2, 1}
     this->internalNodes[1]->getOutputPort(0)->connectTo(this->getOutputPort(0));
 }
 
+ANDNode::ANDNode(int n) : AbstractNode {"MB_AND", 2 * n, n}{
+    // Multibit AND
+    for(int i = 0; i < n; i ++){
+        this->internalNodes.push_back(new ANDNode());
+        this->getInputPort(i)->connectTo(this->internalNodes[i]->getInputPort(0));
+        this->getInputPort(i + n)->connectTo(this->internalNodes[i]->getInputPort(1));
+        this->internalNodes[i]->getOutputPort(0)->connectTo(this->getOutputPort(i));
+    }
+}
+
 ANDNode::~ANDNode()
 {
     //dtor
@@ -27,20 +37,4 @@ ANDNode& ANDNode::operator=(const ANDNode& rhs)
     if (this == &rhs) return *this; // handle self assignment
     //assignment operator
     return *this;
-}
-
-void ANDNode::Process(){
-    Port* i0 = this->getInputPort(0);
-    Port* i1 = this->getInputPort(1);
-    Port* out = this->getOutputPort(0);
-    AbstractNode *nand = this->internalNodes[0];
-    AbstractNode *notNode = this->internalNodes[1];
-
-    i0->sendData();
-    i1->sendData();
-
-    nand->performOperation();
-    notNode->performOperation();
-    out->receiveData();
-
 }

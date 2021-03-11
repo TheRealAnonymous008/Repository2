@@ -8,12 +8,12 @@ class ANDNode : public AbstractNode
 {
     public:
         ANDNode();
+        ANDNode(int n);
         virtual ~ANDNode();
         ANDNode(const ANDNode& other);
         ANDNode& operator=(const ANDNode& other);
 
     private:
-        void Process() override;
 
 };
 

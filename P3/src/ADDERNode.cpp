@@ -1,9 +1,11 @@
 #include "ADDERNode.h"
 #include "Nodes.h"
 
-ADDERNode::ADDERNode() : AbstractNode {"1-ADDER", 2, 2}
+ADDERNode::ADDERNode() : AbstractNode {"ADDER", 3, 2}
 {
     // Adopt the convention that the 0th digit is the right most digit and the n+1th digit is the carry bit.
+
+    // Add the first two bits
     this->internalNodes.push_back(new XORNode());
     this->internalNodes.push_back(new ANDNode());
 
@@ -12,9 +14,49 @@ ADDERNode::ADDERNode() : AbstractNode {"1-ADDER", 2, 2}
     this->getInputPort(0)->connectTo(this->internalNodes[1]->getInputPort(0));
     this->getInputPort(1)->connectTo(this->internalNodes[1]->getInputPort(1));
 
-    this->internalNodes[0]->getOutputPort(0)->connectTo(this->getOutputPort(0));
-    this->internalNodes[1]->getOutputPort(0)->connectTo(this->getOutputPort(1));
+
+    // Add the carry bits
+    this->internalNodes.push_back(new XORNode());
+    this->internalNodes.push_back(new ANDNode());
+
+    this->internalNodes[0]->getOutputPort(0)->connectTo(this->internalNodes[2]->getInputPort(0));
+    this->getInputPort(2)->connectTo(this->internalNodes[2]->getInputPort(1));
+
+    this->internalNodes[0]->getOutputPort(0)->connectTo(this->internalNodes[3]->getInputPort(0));
+    this->getInputPort(2)->connectTo(this->internalNodes[3]->getInputPort(1));
+
+
+    // Resolve carry bit
+    this->internalNodes.push_back(new ORNode());
+    this->internalNodes[1]->getOutputPort(0)->connectTo(this->internalNodes[4]->getInputPort(0));
+    this->internalNodes[3]->getOutputPort(0)->connectTo(this->internalNodes[4]->getInputPort(1));
+
+    this->internalNodes[2]->getOutputPort(0)->connectTo(this->getOutputPort(0));
+    this->internalNodes[4]->getOutputPort(0)->connectTo(this->getOutputPort(1));
 }
+
+ADDERNode::ADDERNode(int n) : AbstractNode {"MB_ADDER", 2 * n + 1, n + 1}{
+    for(int i = 0; i < n; i ++){
+        this->internalNodes.push_back(new ADDERNode());
+    }
+
+    // Connect carry bit to first adder
+    this->getInputPort(2 * n)->connectTo(this->internalNodes[0]->getInputPort(2));
+
+    for(int i = 0; i < n; i ++){
+        this->getInputPort(i)->connectTo(this->internalNodes[i]->getInputPort(0));
+        this->getInputPort(i + n)->connectTo(this->internalNodes[i]->getInputPort(1));
+
+        // connect the carry to the next bit's adder
+        if(i != n -1 )
+            this->internalNodes[i]->getOutputPort(1)->connectTo(this->internalNodes[i + 1]->getInputPort(2));
+        this->internalNodes[i]->getOutputPort(0)->connectTo(this->getOutputPort(i));
+    }
+
+    // Connect last adder to output carry bit
+    this->internalNodes[n - 1]->getOutputPort(1)->connectTo(this->getOutputPort(n));
+}
+
 
 ADDERNode::~ADDERNode()
 {
@@ -33,17 +75,3 @@ ADDERNode& ADDERNode::operator=(const ADDERNode& rhs)
     return *this;
 }
 
-void ADDERNode::Process(){
-    for(int i = 0; i < inputPorts ; i ++){
-        this->getInputPort(i)->sendData();
-    }
-
-    for(int i = 0; i < (int) this->internalNodes.size(); i ++){
-        this->internalNodes[i]->performOperation();
-    }
-
-    for(int i = 0; i < outputPorts; i ++){
-        this->getOutputPort(i)->receiveData();
-    }
-
-}

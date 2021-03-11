@@ -38,21 +38,3 @@ MUXNode& MUXNode::operator=(const MUXNode& rhs)
     //assignment operator
     return *this;
 }
-
-void MUXNode::Process(){
-    Port* i0 = this->getInputPort(0);
-    Port* i1 = this->getInputPort(1);
-    Port* i2 = this->getInputPort(2);
-    Port* out = this->getOutputPort(0);
-
-    i0->sendData();
-    i1->sendData();
-    i2->sendData();
-
-    for(int i = 0; i < 4; i++){
-        this->internalNodes[i]->performOperation();
-    }
-
-    out->receiveData();
-
-}
