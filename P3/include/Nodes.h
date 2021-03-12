@@ -10,6 +10,8 @@
 #include "XORNode.h"
 #include "MUXNode.h"
 #include "ADDERNode.h"
+#include "INVNode.h"
+#include "ALUNode.h"
 
 #include<iostream>
 

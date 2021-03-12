@@ -5,6 +5,11 @@ ADDERNode::ADDERNode() : AbstractNode {"ADDER", 3, 2}
 {
     // Adopt the convention that the 0th digit is the right most digit and the n+1th digit is the carry bit.
 
+    // Specification:
+    // The first n input ports correspond to the bits of the first addend, the next n input ports correspond to that of the second. The last port is for
+    // the carry bit.
+    // The node outputs the n-bit signal once the operation is completed.
+
     // Add the first two bits
     this->internalNodes.push_back(new XORNode());
     this->internalNodes.push_back(new ANDNode());

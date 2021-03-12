@@ -1,7 +1,7 @@
 #include "MUXNode.h"
 #include "Nodes.h"
 
-MUXNode::MUXNode() : AbstractNode(3, 1)
+MUXNode::MUXNode() : AbstractNode("MUX", 3, 1)
 {
     this->internalNodes.push_back(new ANDNode);
     this->internalNodes.push_back(new NOTNode);
@@ -21,6 +21,18 @@ MUXNode::MUXNode() : AbstractNode(3, 1)
     this->internalNodes[3]->getOutputPort(0)->connectTo(this->getOutputPort(0));
 
 }
+
+MUXNode::MUXNode(int n) : AbstractNode("MB_MUX", 2 * n + 1, n){
+    // This one performs bitwise MUX.
+    for(int i = 0; i < n; i ++){
+        this->internalNodes.push_back(new MUXNode());
+        this->getInputPort(i)->connectTo(this->internalNodes[i]->getInputPort(0));
+        this->getInputPort(i + n)->connectTo(this->internalNodes[i]->getInputPort(1));
+        this->internalNodes[i]->getOutputPort(0)->connectTo(this->getOutputPort(i));
+        this->getInputPort(2*n)->connectTo(this->internalNodes[i]->getInputPort(2));
+    }
+}
+
 
 MUXNode::~MUXNode()
 {

@@ -8,6 +8,7 @@ class MUXNode : public AbstractNode
 {
     public:
         MUXNode();
+        MUXNode(int n);
         virtual ~MUXNode();
         MUXNode(const MUXNode& other);
         MUXNode& operator=(const MUXNode& other);
