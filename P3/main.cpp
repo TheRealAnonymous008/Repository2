@@ -2,29 +2,49 @@
 #include "Nodes.h"
 #include "Signal.h"
 #include "Port.h"
+#include "Clock.h"
 
 int main()
 {
-    INPUTNode inNode(2);
-    OUTPUTNode outNode(2);
+    int n = 1;
+    int inputs  = 2 * n;
+    int outputs = n;
 
-    inNode.setSignalAtPort(new Signal(1), 0);
-    inNode.setSignalAtPort(new Signal(1), 1);
-
-    ADDERNode node;
-
-    inNode.getOutputPort(0)->connectTo(node.getInputPort(0));
-    inNode.getOutputPort(1)->connectTo(node.getInputPort(1));
-    node.getOutputPort(0)->connectTo(outNode.getInputPort(0));
-    node.getOutputPort(1)->connectTo(outNode.getInputPort(1));
+    INPUTNode* inNode = new INPUTNode(inputs);
+    OUTPUTNode* outNode = new OUTPUTNode(outputs);
+    AbstractNode* node = new DLATCHNode();
 
 
-    inNode.performOperation();
-    node.performOperation();
-    outNode.performOperation();
 
-    outNode.displaySignalAtPort(0);
-    outNode.displaySignalAtPort(1);
+    for(int i = 0; i < inputs; i ++){
+        inNode->getOutputPort(i)->connectTo(node->getInputPort(i));
+        inNode->getOutputPort(i)->connectTo(node->getInputPort(i));
+    }
+
+    for(int i = 0; i < outputs; i ++){
+        node->getOutputPort(i)->connectTo(outNode->getInputPort(i));
+    }
+
+    while(true){
+        int first[n] = {1};
+        int second[n] = {1};
+        std::cin>>first[0]>>second[0];
+
+        for(int i = 0; i < n; i++){
+            inNode->setSignalAtPort(new Signal(first[i]), i);
+            inNode->setSignalAtPort(new Signal(second[i]), n + i);
+        }
+
+        inNode->performOperation();
+        node->performOperation();
+        outNode->performOperation();
+
+        for(int i = 0; i < n; i++){
+            outNode->displaySignalAtPort(i);
+            std::cout<<"\n";
+        }
+
+    }
 
     return 0;
 }

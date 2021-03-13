@@ -12,7 +12,9 @@
 #include "ADDERNode.h"
 #include "INVNode.h"
 #include "ALUNode.h"
+#include "NORNode.h"
 
+#include "DLATCHNode.h"
 #include<iostream>
 
 #endif // NODES_H_INCLUDED
