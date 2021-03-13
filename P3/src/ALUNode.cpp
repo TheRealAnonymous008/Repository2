@@ -135,8 +135,8 @@ AbstractNode* ALUNode::choice(int n, AbstractNode* a, AbstractNode* c){
     AbstractNode* node = new MUXNode(n);
     this->internalNodes.push_back(node);
     for(int i = 0; i < n; i ++){
-        a->getOutputPort(i)->connectTo(node->getInputPort(i));
-        c->getOutputPort(i)->connectTo(node->getInputPort(n + i));
+        c->getOutputPort(i)->connectTo(node->getInputPort(i));
+        a->getOutputPort(i)->connectTo(node->getInputPort(n + i));
     }
     this->getInputPort(2 * n + 4)->connectTo(node->getInputPort(2 *n));
     return node;

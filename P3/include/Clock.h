@@ -11,7 +11,7 @@ class Clock
 
     private:
         int signal = 0;
-        int peakLength = 500;
+        int peakLength = 10;
 
         void updateClock();
 

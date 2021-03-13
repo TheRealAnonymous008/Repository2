@@ -3,21 +3,24 @@
 #include "Signal.h"
 #include "Port.h"
 #include "Clock.h"
+#include <math.h>
 
 int main()
 {
-    int n = 1;
-    int inputs  = 2 * n;
+    // Demonstration of basic synchronous memory storage.
+    int n = 4;
+    int k = 4;
+    int inputs  = k * n+ (int) log2(k);
     int outputs = n;
 
     INPUTNode* inNode = new INPUTNode(inputs);
     OUTPUTNode* outNode = new OUTPUTNode(outputs);
-    AbstractNode* node = new DLATCHNode();
+    AbstractNode* node = new MUXNode(n, k);
+    Clock* clock = new Clock();
 
 
 
     for(int i = 0; i < inputs; i ++){
-        inNode->getOutputPort(i)->connectTo(node->getInputPort(i));
         inNode->getOutputPort(i)->connectTo(node->getInputPort(i));
     }
 
@@ -25,26 +28,24 @@ int main()
         node->getOutputPort(i)->connectTo(outNode->getInputPort(i));
     }
 
-    while(true){
-        int first[n] = {1};
-        int second[n] = {1};
-        std::cin>>first[0]>>second[0];
+    int vals[inputs] = {0, 0, 0, 1,
+                        0, 1, 1, 0,
+                        1, 0, 1, 1,
+                        1, 1, 1, 1,
+                        0, 1};
 
-        for(int i = 0; i < n; i++){
-            inNode->setSignalAtPort(new Signal(first[i]), i);
-            inNode->setSignalAtPort(new Signal(second[i]), n + i);
-        }
-
-        inNode->performOperation();
-        node->performOperation();
-        outNode->performOperation();
-
-        for(int i = 0; i < n; i++){
-            outNode->displaySignalAtPort(i);
-            std::cout<<"\n";
-        }
-
+    for(int i = 0; i < inputs; i ++){
+        inNode->setSignalAtPort(new Signal(vals[i]), i);
     }
+
+    inNode->performOperation();
+    node->performOperation();
+    outNode->performOperation();
+
+    for(int i = 0; i < n; i++){
+        outNode->displaySignalAtPort(i);
+    }
+
 
     return 0;
 }

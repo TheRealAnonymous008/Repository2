@@ -15,6 +15,9 @@
 #include "NORNode.h"
 
 #include "DLATCHNode.h"
+#include "DFFNode.h"
+#include "REGNode.h"
+
 #include<iostream>
 
 #endif // NODES_H_INCLUDED
