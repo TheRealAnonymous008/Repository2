@@ -15,7 +15,7 @@ class MUXNode : public AbstractNode
         MUXNode& operator=(const MUXNode& other);
 
     private:
-        AbstractNode* configureDigitChecker(int n , int k, int digits, int i);
+
 };
 
 #endif // MUXNODE_H

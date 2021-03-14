@@ -14,9 +14,13 @@
 #include "ALUNode.h"
 #include "NORNode.h"
 
+#include "EQNode.h"
+
 #include "DLATCHNode.h"
 #include "DFFNode.h"
 #include "REGNode.h"
+#include "RAMNode.h"
+
 
 #include<iostream>
 

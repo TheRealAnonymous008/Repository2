@@ -7,15 +7,17 @@
 
 int main()
 {
-    // Demonstration of basic synchronous memory storage.
-    int n = 4;
-    int k = 4;
-    int inputs  = k * n+ (int) log2(k);
-    int outputs = n;
+    // Demonstration of using a k-bit RAM with n registers
+    // Let's say we have 2-bit RAM with 2 registers. n = 2, w = k = 2
+    int n = 2;
+    int k = 2;
+
+    int inputs  = k + (int) ceil(log2(n)) + 2;
+    int outputs = k;
 
     INPUTNode* inNode = new INPUTNode(inputs);
     OUTPUTNode* outNode = new OUTPUTNode(outputs);
-    AbstractNode* node = new MUXNode(n, k);
+    AbstractNode* node = new RAMNode(n, k);
     Clock* clock = new Clock();
 
 
@@ -28,24 +30,29 @@ int main()
         node->getOutputPort(i)->connectTo(outNode->getInputPort(i));
     }
 
-    int vals[inputs] = {0, 0, 0, 1,
-                        0, 1, 1, 0,
-                        1, 0, 1, 1,
-                        1, 1, 1, 1,
-                        0, 1};
 
-    for(int i = 0; i < inputs; i ++){
-        inNode->setSignalAtPort(new Signal(vals[i]), i);
+    // Program Logic goes here
+    while(true){
+        for(int i = 0; i < inputs; i ++){
+            if(i == k){
+                std::cout<<"Enter address: ";
+            }
+            if(i == inputs - 2){
+                std::cout<<"Enter load and clock: ";
+            }
+            int x;
+            std::cin>>x;
+            inNode->setSignalAtPort(new Signal(x), i);
+        }
+
+        inNode->performOperation();
+        node->performOperation();
+        outNode->performOperation();
+
+        for(int i = 0; i < outputs; i++){
+            outNode->displaySignalAtPort(i);
+        }
     }
-
-    inNode->performOperation();
-    node->performOperation();
-    outNode->performOperation();
-
-    for(int i = 0; i < n; i++){
-        outNode->displaySignalAtPort(i);
-    }
-
 
     return 0;
 }

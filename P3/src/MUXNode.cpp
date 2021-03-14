@@ -34,10 +34,10 @@ MUXNode::MUXNode(int n) : AbstractNode("MB_MUX", 2 * n + 1, n){
     }
 }
 
-MUXNode::MUXNode(int n, int k) : AbstractNode("MW_MB_MUX", k * n + (int) log2(k) , n){
+MUXNode::MUXNode(int n, int k) : AbstractNode("MW_MB_MUX", k * n + (int) ceil(log2(k)) , n){
     // Multi bit and multi way MUX. Let n be the number of bits, and k be the number of choices
     // TO-DO Wire up the k-way n-bit MUXNode
-    int digits = (int) log2(k);
+    int digits = (int) ceil(log2(k));
     AbstractNode* arr[k];
 
     for(int i = 0; i < k; i ++){
@@ -61,7 +61,14 @@ MUXNode::MUXNode(int n, int k) : AbstractNode("MW_MB_MUX", k * n + (int) log2(k)
 
 
         // Wire up digit checker programmaticaly. it STRICTLY consists of AND nodes applied in sequence
-        AbstractNode* digitChecker = this->configureDigitChecker(n, k, digits, i);
+        AbstractNode* digitChecker = new EQNode(digits, i);
+
+        // Configure digit Checker
+        for(int d = 0; d < digits; d++){
+            this->getInputPort(k * n + d)->connectTo(digitChecker->getInputPort(d));
+        }
+        this->internalNodes.push_back(digitChecker);
+
         digitChecker->getOutputPort(0)->connectTo(arr[i]->getInputPort(2 * n));
 
         this->internalNodes.push_back(arr[i]);
@@ -74,40 +81,6 @@ MUXNode::MUXNode(int n, int k) : AbstractNode("MW_MB_MUX", k * n + (int) log2(k)
     }
 
 }
-
-AbstractNode* MUXNode::configureDigitChecker(int n, int k, int digits, int i){
-    int index = i;
-    std::vector<AbstractNode*> arr;
-
-    for(int d = 0; d < digits; d++){
-        arr.push_back(new ANDNode());
-    }
-
-    for(int d = 0; d < digits; d++){
-        if(d == 0){
-            arr[d]->getInputPort(0)->setRegister(*(new Signal(1)));
-            arr[d]->getInputPort(0)->receiveData();
-        }
-        else{
-            arr[d - 1]->getOutputPort(0)->connectTo(arr[d]->getInputPort(0));
-        }
-        if(index & (1 << d)){
-            this->getInputPort(k * n + d)->connectTo(arr[d]->getInputPort(1));
-        }
-        // Bit is 0
-        else{
-            AbstractNode* notNode = new NOTNode();
-            this->internalNodes.push_back(notNode);
-            this->getInputPort(k * n + d)->connectTo(notNode->getInputPort(0));
-            notNode->getOutputPort(0)->connectTo(arr[d]->getInputPort(1));
-        }
-        this->internalNodes.push_back(arr[d]);
-
-    }
-
-    return arr[digits - 1];
-}
-
 
 MUXNode::~MUXNode()
 {
