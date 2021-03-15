@@ -20,6 +20,7 @@
 #include "DFFNode.h"
 #include "REGNode.h"
 #include "RAMNode.h"
+#include "PCNode.h"
 
 
 #include<iostream>

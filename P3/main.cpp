@@ -12,12 +12,12 @@ int main()
     int n = 2;
     int k = 2;
 
-    int inputs  = k + (int) ceil(log2(n)) + 2;
+    int inputs  = k + 4;
     int outputs = k;
 
     INPUTNode* inNode = new INPUTNode(inputs);
     OUTPUTNode* outNode = new OUTPUTNode(outputs);
-    AbstractNode* node = new RAMNode(n, k);
+    AbstractNode* node = new PCNode(k);
     Clock* clock = new Clock();
 
 
@@ -35,19 +35,23 @@ int main()
     while(true){
         for(int i = 0; i < inputs; i ++){
             if(i == k){
-                std::cout<<"Enter address: ";
-            }
-            if(i == inputs - 2){
-                std::cout<<"Enter load and clock: ";
+                std::cout<<"Enter inc / store / reset / clock: ";
             }
             int x;
             std::cin>>x;
             inNode->setSignalAtPort(new Signal(x), i);
         }
 
+
         inNode->performOperation();
         node->performOperation();
         outNode->performOperation();
+
+
+        for(int i = 0; i < inputs; i++){
+            node->getInputPort(i)->displayVal();
+        }
+        std::cout<<"\n";
 
         for(int i = 0; i < outputs; i++){
             outNode->displaySignalAtPort(i);
